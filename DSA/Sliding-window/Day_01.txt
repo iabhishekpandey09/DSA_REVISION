@@ -1,0 +1,90 @@
+# Day 1 – Fruits Into Baskets
+
+## 🧠 Problem
+
+You are given an array where each element represents a type of fruit. You have 2 baskets, and each basket can hold only one type of fruit, but unlimited quantity.
+
+👉 Find the maximum number of fruits you can collect in a contiguous subarray containing at most 2 distinct fruit types.
+
+---
+
+## 🐢 Brute Force Approach
+
+* Generate all possible subarrays.
+* For each subarray, check if it contains at most 2 distinct fruits.
+* Track the maximum length.
+
+Time Complexity: O(n²)
+Space Complexity: O(n)
+
+---
+
+## 🚶 Better Approach
+
+* Fix a starting index.
+* Expand the subarray while tracking distinct fruits using a set/map.
+* Stop when distinct fruits exceed 2.
+
+Time Complexity: O(n²)
+Space Complexity: O(1)
+
+---
+
+## ⚡ Optimal Approach (Sliding Window)
+
+* Use two pointers (left and right).
+* Use a HashMap to store fruit counts.
+* Expand window using right pointer.
+* If distinct fruits exceed 2, shrink from left.
+* Track maximum window size.
+
+---
+
+## ✅ Code
+
+```java
+class Solution {
+    public int totalFruit(int[] fruits) {
+        int left = 0, maxLen = 0;
+        HashMap<Integer,Integer> mp = new HashMap<>();
+
+        for(int right = 0; right < fruits.length; right++) {
+            int fruitToAdd = fruits[right];
+            mp.put(fruitToAdd, mp.getOrDefault(fruitToAdd, 0) + 1);
+
+            while(mp.size() > 2) {
+                mp.put(fruits[left], mp.get(fruits[left]) - 1);
+
+                if(mp.get(fruits[left]) == 0) {
+                    mp.remove(fruits[left]);
+                }
+                left++;
+            }
+
+            maxLen = Math.max(maxLen, right - left + 1);
+        }
+        return maxLen;
+    }
+}
+```
+
+---
+
+## ⏱️ Complexity Analysis
+
+Time Complexity: O(n)
+Space Complexity: O(1)
+
+---
+
+## 💡 Key Takeaways
+
+* Classic sliding window problem.
+* Similar to "Longest Substring with K Distinct Characters".
+* Important pattern: At most K distinct elements.
+
+---
+
+## 🏷️ Tags
+
+#SlidingWindow #TwoPointers #HashMap
