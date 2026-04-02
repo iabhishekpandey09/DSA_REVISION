@@ -1,0 +1,103 @@
+# Day 2 Problem – Longest Repeating Character Replacement
+
+## Problem
+
+You are given a string s consisting of uppercase English letters and an integer k.
+
+You can replace at most k characters in the string with any other character.
+
+Find the length of the longest substring that can be made of the same character after at most k replacements.
+
+---
+
+## Brute Force Approach
+
+- Generate all possible substrings.
+- For each substring:
+  - Count frequency of each character.
+  - Find the most frequent character.
+  - Check if (length - maxFreq) <= k.
+- Track maximum valid length.
+
+Time Complexity: O(n^2 * 26)
+Space Complexity: O(1)
+
+---
+
+## Better Approach
+
+- Fix a starting index.
+- Expand substring while maintaining frequency array.
+- Track max frequency in current window.
+- Stop when replacements exceed k.
+
+Time Complexity: O(n^2)
+Space Complexity: O(1)
+
+---
+
+## Optimal Approach (Sliding Window)
+
+- Use two pointers (left, right)
+- Maintain a frequency array of size 26
+- Track maxFreq = frequency of most frequent character
+- Expand window using right
+- If window becomes invalid, shrink from left
+- Track maximum window size
+
+---
+
+## Key Insight
+
+changes needed = window size - maxFreq
+
+Valid condition:
+(window size - maxFreq) <= k
+
+---
+
+## Code
+
+class Solution {
+    public int characterReplacement(String s, int k) {
+        int left = 0, maxLen = 0, maxFreq = 0;
+        int[] freq = new int[26];
+
+        for(int right = 0; right < s.length(); right++) {
+            freq[s.charAt(right) - 'A']++;
+
+            maxFreq = Math.max(maxFreq, freq[s.charAt(right) - 'A']);
+
+            if((right - left + 1) - maxFreq > k) {
+                freq[s.charAt(left) - 'A']--;
+                left++;
+            }
+
+            maxLen = Math.max(maxLen, right - left + 1);
+        }
+        return maxLen;
+    }
+}
+
+---
+
+## Complexity Analysis
+
+Time Complexity: O(n)
+Space Complexity: O(1)
+
+---
+
+## Notes
+
+- We do NOT decrease maxFreq when shrinking window
+- This is called stale maxFreq trick
+- Works because we only care about valid window size
+
+---
+
+## Takeaway
+
+- Replace <= k → use (window - maxFreq)
+- Longest substring → track maxLen
+- Expand always, shrink when invalid
