@@ -1,4 +1,4 @@
-# Day 1 – Fruits Into Baskets
+# Day 1 Problem1 – Fruits Into Baskets
 
 ## 🧠 Problem
 
@@ -76,15 +76,3 @@ Time Complexity: O(n)
 Space Complexity: O(1)
 
 ---
-
-## 💡 Key Takeaways
-
-* Classic sliding window problem.
-* Similar to "Longest Substring with K Distinct Characters".
-* Important pattern: At most K distinct elements.
-
----
-
-## 🏷️ Tags
-
-#SlidingWindow #TwoPointers #HashMap

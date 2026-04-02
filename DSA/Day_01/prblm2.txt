@@ -1,0 +1,82 @@
+# Day 1 Problem2 – Longest Substring with Exactly K Distinct Characters
+
+## 🧠 Problem
+
+You are given a string `s` and an integer `k`.
+
+👉 Find the length of the **longest substring** that contains **exactly k distinct characters**.
+If no such substring exists, return `-1`.
+
+---
+
+## 🐢 Brute Force Approach
+
+* Generate all possible substrings.
+* For each substring, count distinct characters.
+* If distinct characters == k, update max length.
+
+Time Complexity: O(n²)
+Space Complexity: O(n)
+
+---
+
+## 🚶 Better Approach
+
+* Fix a starting index.
+* Expand substring while tracking distinct characters using a HashMap.
+* Stop when distinct characters exceed k.
+
+Time Complexity: O(n²)
+Space Complexity: O(k)
+
+---
+
+## ⚡ Optimal Approach (Sliding Window)
+
+* Use two pointers (left and right).
+* Use a HashMap to store character frequencies.
+* Expand window using right pointer.
+* If distinct characters exceed k, shrink from left.
+* Only update max length when map size == k.
+
+---
+
+## ✅ Code
+
+```java id="x9k2lm"
+class Solution {
+    public int longestKSubstr(String s, int k) {
+        int left = 0, maxLen = -1;
+        HashMap<Character, Integer> mp = new HashMap<>();
+        
+        for (int right = 0; right < s.length(); right++) {
+            char charRight = s.charAt(right);
+            mp.put(charRight, mp.getOrDefault(charRight, 0) + 1);
+            
+            while (mp.size() > k) {
+                char leftChar = s.charAt(left);
+                mp.put(leftChar, mp.get(leftChar) - 1);
+                
+                if (mp.get(leftChar) == 0) {
+                    mp.remove(leftChar);
+                }
+                left++;
+            }
+            
+            if (mp.size() == k) {
+                maxLen = Math.max(maxLen, right - left + 1);
+            }
+        }
+        return maxLen;
+    }
+}
+```
+
+---
+
+## ⏱️ Complexity Analysis
+
+Time Complexity: O(n)
+Space Complexity: O(k)
+
+---
