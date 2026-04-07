@@ -42,7 +42,7 @@ class subArrwithKdistinc{
                     mp.remove(arr[left]);
                 }
 
-                left++;
+                left = left + 1;
             }
 
             count += right - left + 1;
