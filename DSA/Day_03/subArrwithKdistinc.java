@@ -19,6 +19,8 @@ class subArrwithKdistinc{
         }
 
         System.out.println("Number of subarray with k different Integer is : " + kDiffrentInteger(arr, n, k));
+
+        sc.close();
     }
 
     private static int  kDiffrentInteger(int arr[], int n, int k) {
