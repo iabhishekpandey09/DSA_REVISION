@@ -1,0 +1,175 @@
+Amazon s3 bucket static website hosting
+
+a) create a s3 bucket
+	1. Login to aws console
+	2. go to amazon s3
+	3. click create bucket
+	4. configure
+		.bucket name : must be globally unique(my-bucket-name)
+		.region : choose the nearest one
+		.object ownership : keeps default
+		.block public access : uncheck "block all public access", acknowledge warning
+	5. create bucket
+
+b)upload static website
+	1.open created bucket
+	2.click upload -> add files
+	3.select all website files
+		.index.html
+		.style.css
+		.script.js
+		.images etc
+	4.click upload
+
+c) host the static website
+	step1 : Enable static website hosting
+		1. go to properties -> static website hosting
+		2. enable 
+			.static website hosting
+			.indexed document : index.html
+		3. save changes
+	step2 : set public access :
+		1. go to permission -> bucket policy and add
+			{
+			   version : "2012-10-17",
+			   statement : [
+				{
+				   "effect" : allow,
+				   "principal":"*",
+				   "action:"s3:getObject",
+				   "resourse" : arn:aws:s3:bucket-name/*"
+				}
+			     ]
+			}
+
+
+RDP client
+
+a) create an instance
+1. login to aws console
+2. go to amazon ec2
+3. click launch instance
+4. configure
+	name : must be globally unique
+	awi : microsoft windows server
+	instance : t3.micro
+	keyapir : select existing pairs or create new pair
+5. network setting
+	allow RDP(port 3389) required for remote desktop
+	optional (allow http/https) if needed
+6. click create bucket
+7. note the public ip adress
+
+b) connect the window instances using RDP client
+	step1 : get administrator password
+		1. go to ec2 dashboard
+		2. select ur window instance
+		3.click connect
+		4.go to rdp client tab
+		5.click get password
+		6.upload your .pem file
+		7.click decrypt password
+		8.copy :  username : administartor, password : decrypt password
+
+	step2: connecting using rdp
+		open remote desktop connection -> run mstsc
+		eneter <public IP>
+		click connect
+		enter credentials username and password
+		accept certification warning
+
+
+Elastic Load Balancer Write the necessary and sufficient steps to perform the following tasks: Tasks: A. Launch two EC2 amazon linux instances [2 Marks] B. Write the commands to install and start apache service on the EC2
+instances launched in step A) [2 Marks] C. Customized the default page of apache service to display the hostname
+of respective instances (created in step A) [1 Marks] D. Create a Target group that has EC2 instances (created in step A)
+registered. Also assign the listening port. [2 Marks] E. Create an Application Load Balancer which targets the Target Group
+created in step D and forwarding the client request to appropriate port
+[3 Marks]
+
+a.launch two ec2 instances
+
+login aws console
+navigate to amazon ec2
+click launch instance
+
+configure
+name : must be globally unique
+ami : amazon linux 2
+instance : t3.micro
+key pair : select or add
+
+network setting : 
+allow ssh(port 22) 
+allow http(port 80)
+click launch instance
+
+sudo yum update -y
+sudo yum install httpd -y
+sudo systemctl start httpd 
+sudo systemctl enable httpd
+
+echo `<h1> welcome from ${hostname}</h1> | sudo tee /var/www/html/index.html
+
+go to ec2 - targetGroup
+click target group
+
+target type : instance
+name: myTargetGroup
+protocol : http
+port : 80
+register target:
+select both ec2 instance
+click create target group
+
+
+click ec2 - load balancer
+click create load balancer
+select application load balancer
+
+configure
+name : myALB
+schema : internet facing
+listener : http(port 80)
+security group : allow http
+target security group : mySecurityGriuo
+
+create load balancer
+
+
+b) Connect to the Instance
+ssh -i your-key.pem ec2-user@<Public-IP>
+c) Install Apache Server
+sudo yum update -y
+sudo yum install httpd -y
+d) Start Apache Service
+sudo systemctl start httpd
+sudo systemctl enable httpd
+
+To verify:
+
+systemctl status httpd
+
+Open browser:
+
+http://<Public-IP>
+
+(Default Apache page should appear)
+
+e) Create Custom AMI from Running Instance
+Go to EC2 → Instances
+Select your instance
+Click Actions → Image and templates → Create Image
+Enter:
+Image name: MyApacheAMI
+Click Create Image
+f) Launch Instance from Custom AMI
+Go to AMIs section
+Select MyApacheAMI
+Click Launch instance from image
+Configure (instance type, key pair, security group)
+Click Launch
+g) Check if nginx is preinstalled
+Connect to new instance:
+ssh -i your-key.pem ec2-user@<New-Public-IP>
+Check nginx:
+nginx -v
